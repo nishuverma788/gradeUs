@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    tools {
-        maven 'Maven'
-    }
     environment {
         frontendRepositoryName = "nishu839/gradeus-backend"
         backendRepositoryName = "nishu839/gradeus-backend"
