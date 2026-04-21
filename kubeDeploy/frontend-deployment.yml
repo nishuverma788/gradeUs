@@ -14,7 +14,7 @@ spec:  # What state you desire for the object
     spec:
       containers:
         - name: gradeus-frontend-deployment
-          image: lovyparhar/gradeus-frontend:latest
+          image: nishu839/gradeus-frontend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80

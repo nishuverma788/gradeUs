@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: backend-deployment
-          image: lovyparhar/gradeus-backend:latest
+          image: nishu839/gradeus-backend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8500                
