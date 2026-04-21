@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        frontendRepositoryName = "nishu839/gradeus-backend"
+        frontendRepositoryName = "nishu839/gradeus-frontend"
         backendRepositoryName = "nishu839/gradeus-backend"
         tag = "latest"
         frontendImage = ""
