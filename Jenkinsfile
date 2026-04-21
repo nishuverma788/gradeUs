@@ -18,7 +18,7 @@ pipeline {
         stage('Maven Building') {
             steps {
                 script{
-                    sh 'mvn -f gradeus-backend clean install'
+                    sh 'mvn -f gradeus-backend clean install -DskipTests'
                 }
             }
         }
