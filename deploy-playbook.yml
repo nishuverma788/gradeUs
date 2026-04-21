@@ -13,7 +13,7 @@
         helm upgrade --install filebeat kubeDeploy/filebeat
         helm upgrade --install logstash kubeDeploy/logstash
       environment:
-        KUBECONFIG: "/Users/lovejeetsingh/confKube"
+        KUBECONFIG: "/var/lib/jenkins/.kube/config"
 
     - name: Adding secrets and config maps to kubernetes cluster
       ansible.builtin.shell: |
@@ -21,7 +21,7 @@
         kubectl apply -f kubeDeploy/mysql-credentials.yml
         kubectl apply -f kubeDeploy/mysql-configmap.yml
       environment:
-        KUBECONFIG: "/Users/lovejeetsingh/confKube"
+        KUBECONFIG: "/var/lib/jenkins/.kube/config"
 
     - name: Deleting older application deployment
       ansible.builtin.shell: |
@@ -29,7 +29,7 @@
         kubectl delete -f kubeDeploy/backend-deployment.yml --ignore-not-found=true
         kubectl delete -f kubeDeploy/frontend-deployment.yml --ignore-not-found=true
       environment:
-        KUBECONFIG: "/Users/lovejeetsingh/confKube"
+        KUBECONFIG: "/var/lib/jenkins/.kube/config"
 
     - name: Deploying application to kubernetes cluster
       ansible.builtin.shell: |
@@ -41,4 +41,4 @@
         kubectl apply -f kubeDeploy/frontend-service.yml
         kubectl apply -f kubeDeploy/frontend-deployment.yml
       environment:
-        KUBECONFIG: "/Users/lovejeetsingh/confKube"
+        KUBECONFIG: "/var/lib/jenkins/.kube/config"
