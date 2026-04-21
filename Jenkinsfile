@@ -4,8 +4,8 @@ pipeline {
         maven 'Maven'
     }
     environment {
-        frontendRepositoryName = "lovyparhar/gradeus-frontend"
-        backendRepositoryName = "lovyparhar/gradeus-backend"
+        frontendRepositoryName = "nishu839/gradeus-backend"
+        backendRepositoryName = "nishu839/gradeus-backend"
         tag = "latest"
         frontendImage = ""
         backendImage = ""
@@ -14,8 +14,8 @@ pipeline {
         stage('Fetch code from github') {
             steps {
                 git branch: 'master',
-                url: 'https://github.com/lovyparhar/gradeUs',
-                credentialsId: 'gradeus-cred'
+                url: 'https://github.com/nishuverma788/gradeUs.git',
+                credentialsId: '5addd60d-9f6d-47d6-ba54-ac23d523c2b3'
             }
         }
         stage('Maven Building') {
@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script{
                     // By default, the registry will be dockerhub
-                    docker.withRegistry('', 'dockerhub-credentials'){
+                    docker.withRegistry('', 'DockerhubCred'){
                         backendImage.push()
                     }
                 }
@@ -53,7 +53,7 @@ pipeline {
             steps {
                 script{
                     // By default, the registry will be dockerhub
-                    docker.withRegistry('', 'dockerhub-credentials'){
+                    docker.withRegistry('', 'DockerhubCred'){
                         frontendImage.push()
                     }
                 }
@@ -68,36 +68,29 @@ pipeline {
 
         stage('Deploying logstash and filebeats inside the kubernetes cluster') {
             steps {
-                withKubeConfig([credentialsId: 'aksConfig', serverUrl: 'https://gradeus-dns-9q6us9tx.hcp.eastus.azmk8s.io']) {
                     sh 'helm upgrade --install filebeat kubeDeploy/filebeat'
                     sh 'helm upgrade --install logstash kubeDeploy/logstash'
                 }
             }
-        }
 
         stage('Adding secrets and config maps to kubernetes cluster') {
             steps {
-                withKubeConfig([credentialsId: 'aksConfig', serverUrl: 'https://gradeus-dns-9q6us9tx.hcp.eastus.azmk8s.io']) {
                     sh 'kubectl apply -f kubeDeploy/mysql-root-credentials.yml'
                     sh 'kubectl apply -f kubeDeploy/mysql-credentials.yml'
                     sh 'kubectl apply -f kubeDeploy/mysql-configmap.yml'
                 }
             }
-        }
 
         stage('Deleting older application deployment') {
             steps {
-                withKubeConfig([credentialsId: 'aksConfig', serverUrl: 'https://gradeus-dns-9q6us9tx.hcp.eastus.azmk8s.io']) {
                     sh 'kubectl delete -f kubeDeploy/mysql-deployment.yml --ignore-not-found=true'
                     sh 'kubectl delete -f kubeDeploy/backend-deployment.yml --ignore-not-found=true'
                     sh 'kubectl delete -f kubeDeploy/frontend-deployment.yml --ignore-not-found=true'
                 }
             }
-        }
 
         stage('Deploying application to kubernetes cluster') {
             steps {
-                withKubeConfig([credentialsId: 'aksConfig', serverUrl: 'https://gradeus-dns-9q6us9tx.hcp.eastus.azmk8s.io']) {
                     sh 'kubectl apply -f kubeDeploy/mysql-service.yml'
                     sh 'kubectl apply -f kubeDeploy/mysql-pvc.yml'
                     sh 'kubectl apply -f kubeDeploy/mysql-deployment.yml'
@@ -108,5 +101,4 @@ pipeline {
                 }
             }
         }
-    }
 }
